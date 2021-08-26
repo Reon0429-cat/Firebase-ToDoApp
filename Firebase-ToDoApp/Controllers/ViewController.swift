@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 final class ViewController: UIViewController {
     
@@ -21,11 +22,34 @@ final class ViewController: UIViewController {
     }
     
     @IBAction private func registerButtonDidTapped(_ sender: Any) {
-        
+        guard let email = registerEmailTextField.text,
+              let password = registerPasswordTextField.text,
+              let name = registerNameTextField.text else { return }
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if let user = result?.user {
+                print("ユーザー作成完了 uid:", user.uid)
+                Firestore.firestore().collection("users").document(user.uid).setData(["name": name]) { error in
+                    if let error = error {
+                        print("Firestore 新規登録失敗", error.localizedDescription)
+                        return
+                    } else {
+                        print("ユーザー作成完了 name:", name)
+                        let storyboard = UIStoryboard(name: "ToDoList", bundle: nil)
+                        let toDoListVC = storyboard.instantiateViewController(
+                            identifier: "ToDoListViewController"
+                        ) as! ToDoListViewController
+                        self.present(toDoListVC, animated: true)
+                    }
+                }
+            } else if let error = error {
+                print("Firebase Auth 新規登録失敗", error.localizedDescription)
+                return
+            }
+        }
     }
     
     @IBAction private func loginButtonDidTapped(_ sender: Any) {
-        
+
     }
     
 }
