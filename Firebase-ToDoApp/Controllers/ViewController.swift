@@ -34,11 +34,7 @@ final class ViewController: UIViewController {
                         return
                     } else {
                         print("ユーザー作成完了 name:", name)
-                        let storyboard = UIStoryboard(name: "ToDoList", bundle: nil)
-                        let toDoListVC = storyboard.instantiateViewController(
-                            identifier: "ToDoListViewController"
-                        ) as! ToDoListViewController
-                        self.present(toDoListVC, animated: true)
+                        self.presentToDoListVC()
                     }
                 }
             } else if let error = error {
@@ -49,7 +45,26 @@ final class ViewController: UIViewController {
     }
     
     @IBAction private func loginButtonDidTapped(_ sender: Any) {
-
+        if let email = loginEmailTextField.text,
+           let password = loginPasswordTextField.text {
+            Auth.auth().signIn(withEmail: email, password: password) { result, error in
+                if let user = result?.user {
+                    print("ログイン完了 uid:" + user.uid)
+                    self.presentToDoListVC()
+                } else if let error = error {
+                    print("ログイン失敗 " + error.localizedDescription)
+                    return
+                }
+            }
+        }
+    }
+    
+    private func presentToDoListVC() {
+        let storyboard = UIStoryboard(name: "ToDoList", bundle: nil)
+        let toDoListVC = storyboard.instantiateViewController(
+            identifier: "ToDoListViewController"
+        ) as! ToDoListViewController
+        self.present(toDoListVC, animated: true)
     }
     
 }
