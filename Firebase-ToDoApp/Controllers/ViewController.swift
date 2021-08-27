@@ -7,7 +7,7 @@
 
 import UIKit
 
-// 元コード: https://github.com/PictoMki/firestore_todo_app/tree/fix/mvc
+// 元のgithubコード: https://github.com/PictoMki/firestore_todo_app/tree/fix/mvc
 
 final class ViewController: UIViewController {
     
