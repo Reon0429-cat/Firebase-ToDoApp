@@ -56,6 +56,7 @@ final class ToDoListViewController: UIViewController {
     }
     
     @IBAction private func segmentedControlDidChanged(_ sender: UISegmentedControl) {
+        print(sender.selectedSegmentIndex)
         switch sender.selectedSegmentIndex {
             case 0:
                 isDone = false
@@ -153,7 +154,16 @@ extension ToDoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+        let storyboard = UIStoryboard(name: "ToDoEdit", bundle: nil)
+        let vc = storyboard.instantiateViewController(
+            identifier: "ToDoEditViewController"
+        ) as! ToDoEditViewController
+        vc.id = ids[indexPath.row]
+        vc.toDoTitle = titles[indexPath.row]
+        vc.detail = details[indexPath.row]
+        vc.isDone = isDones[indexPath.row]
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
     
 }
