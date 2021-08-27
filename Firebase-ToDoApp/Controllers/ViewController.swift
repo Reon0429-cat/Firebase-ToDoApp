@@ -64,7 +64,7 @@ final class ViewController: UIViewController {
         let toDoListVC = storyboard.instantiateViewController(
             identifier: "ToDoListViewController"
         ) as! ToDoListViewController
-        self.present(toDoListVC, animated: true)
+        present(toDoListVC, animated: true)
     }
     
 }
