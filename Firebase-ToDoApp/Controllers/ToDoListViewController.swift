@@ -56,7 +56,6 @@ final class ToDoListViewController: UIViewController {
     }
     
     @IBAction private func segmentedControlDidChanged(_ sender: UISegmentedControl) {
-        print(sender.selectedSegmentIndex)
         switch sender.selectedSegmentIndex {
             case 0:
                 isDone = false

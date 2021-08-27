@@ -6,7 +6,8 @@
 //
 
 import UIKit
-import Firebase
+
+// 元コード: https://github.com/PictoMki/firestore_todo_app/tree/fix/mvc
 
 final class ViewController: UIViewController {
     
@@ -25,21 +26,17 @@ final class ViewController: UIViewController {
         guard let email = registerEmailTextField.text,
               let password = registerPasswordTextField.text,
               let name = registerNameTextField.text else { return }
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let user = result?.user {
-                print("ユーザー作成完了 uid:", user.uid)
-                Firestore.firestore().collection("users").document(user.uid).setData(["name": name]) { error in
+        User.registerUserToAuthentication(email: email, password: password) { user, error in
+            if let user = user {
+                User.createUserToFirestore(userId: user.uid, userName: name) { error in
                     if let error = error {
-                        print("Firestore 新規登録失敗", error.localizedDescription)
-                        return
+                        FuncUtil.showErrorDialog(error: error, title: "Firestore 新規登録失敗", vc: self)
                     } else {
-                        print("ユーザー作成完了 name:", name)
                         self.presentToDoListVC()
                     }
                 }
             } else if let error = error {
-                print("Firebase Auth 新規登録失敗", error.localizedDescription)
-                return
+                FuncUtil.showErrorDialog(error: error, title: "Firebase Auth 新規登録失敗", vc: self)
             }
         }
     }
@@ -47,13 +44,11 @@ final class ViewController: UIViewController {
     @IBAction private func loginButtonDidTapped(_ sender: Any) {
         if let email = loginEmailTextField.text,
            let password = loginPasswordTextField.text {
-            Auth.auth().signIn(withEmail: email, password: password) { result, error in
-                if let user = result?.user {
-                    print("ログイン完了 uid:" + user.uid)
+            User.loginUserToAuthentication(email: email, password: password) { error in
+                if let error = error {
+                    FuncUtil.showErrorDialog(error: error, title: "ログイン失敗", vc: self)
+                } else {
                     self.presentToDoListVC()
-                } else if let error = error {
-                    print("ログイン失敗 " + error.localizedDescription)
-                    return
                 }
             }
         }
