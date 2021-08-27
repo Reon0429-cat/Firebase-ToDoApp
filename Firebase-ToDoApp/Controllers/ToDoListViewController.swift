@@ -36,6 +36,7 @@ final class ToDoListViewController: UIViewController {
     }
     
     @IBAction private func addButtonDidTapped(_ sender: Any) {
+        presentToDoAddVC()
     }
     
     @IBAction private func logoutButtonDidTapped(_ sender: Any) {
@@ -54,6 +55,14 @@ final class ToDoListViewController: UIViewController {
     }
     
     @IBAction private func segmentedControlDidChanged(_ sender: Any) {
+    }
+    
+    private func presentToDoAddVC() {
+        let storyboard = UIStoryboard(name: "ToDoAdd", bundle: nil)
+        let vc = storyboard.instantiateViewController(
+            identifier: "ToDoAddViewController"
+        ) as! ToDoAddViewController
+        present(vc, animated: true)
     }
     
     private func presentVC() {

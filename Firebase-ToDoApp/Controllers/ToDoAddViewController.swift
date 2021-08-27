@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 final class ToDoAddViewController: UIViewController {
 
@@ -20,7 +21,26 @@ final class ToDoAddViewController: UIViewController {
     }
     
     @IBAction private func addButtonDidTapped(_ sender: Any) {
-        
+        if let title = titleTextField.text,
+           let detail = detailTextView.text {
+            if let user = Auth.auth().currentUser {
+                let createdTime = FieldValue.serverTimestamp()
+                let docData = ["title": title,
+                               "detail": detail,
+                               "isDone": false,
+                               "createdAt": createdTime,
+                               "updatedAt": createdTime
+                ] as [String : Any]
+                Firestore.firestore().collection("users/\(user.uid)/todos").document().setData(docData, merge: true) { error in
+                    if error != nil {
+                        print("ToDo作成失敗: ", error!.localizedDescription)
+                        return
+                    }
+                    print("ToDo作成成功")
+                    self.dismiss(animated: true)
+                }
+            }
+        }
     }
     
 }
@@ -36,3 +56,4 @@ private extension ToDoAddViewController {
     }
     
 }
+
